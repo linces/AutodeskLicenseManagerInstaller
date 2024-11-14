@@ -36,7 +36,23 @@ O script substituirá <HOSTNAME> e <MAC> automaticamente pelos valores do sistema
 
 Executar o Código:
 
-Execute o cóoigos para iniciar o processo de instalação e configuração:
+Execute o código ou .exe já compilado para iniciar o processo de instalação e configuração:
 Instala o Autodesk License Manager
 Configura o arquivo de licença
 Registra e inicia o serviço de licença no Windows
+
+## Utilização/Compilação
+Sinta-se à vontade para abrir issues e pull requests para melhorias. A participação da comunidade é bem-vinda para melhorar e expandir este código.
+
+
+## License
+
+Este projeto utiliza a licença "WathEver" faça o que quiser e como quiser, a que sempre utilizo :D.
+
+## Disclaimer
+
+Meu disclaimer padrão:
+
+"Este projeto é fornecido "como está", sem garantias de qualquer tipo. Use-o a seu próprio risco. Não tenho responsabilidade por qualquer danos ou perdas que ocorram ao usar este projeto.
+
+Bla bla bla bla"
