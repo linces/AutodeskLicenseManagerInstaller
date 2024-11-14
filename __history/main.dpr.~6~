@@ -11,7 +11,7 @@ function GetHostName: string;
 var
   Buffer: array [0 .. 255] of AnsiChar;
 begin
-  if WinSock.GetHostName(@Buffer[0], SizeOf(Buffer)) = 0 then
+  if WinSock.GetHostName(@Buffer, SizeOf(Buffer)) = 0 then
     Result := string(Buffer)
   else
     raise Exception.Create('Erro ao obter o nome do host');
@@ -19,22 +19,24 @@ end;
 
 function GetMACAddress: string;
 var
-  NCB: TNCB;
+  NCB:     TNCB;
   Adapter: TAdapterStatus;
-  i: Integer;
-  MAC: string;
+  i:       Integer;
+  MAC:     string;
 begin
   FillChar(NCB, SizeOf(NCB), 0);
   NCB.ncb_command := AnsiChar(NCBRESET);
-  NCB.ncb_lana_num := 0;
+//  NCB.ncb_lana_num := 0;
+  NCB.ncb_lana_num := AnsiChar(0);
+
 
   if Netbios(@NCB) <> NRC_GOODRET then
     raise Exception.Create('Erro ao resetar o NetBIOS');
 
   FillChar(NCB, SizeOf(NCB), 0);
-  NCB.ncb_command := AnsiChar(NCBASTAT);
+  NCB.ncb_command := NCBASTAT;
   NCB.ncb_lana_num := 0;
-  StrPCopy(NCB.ncb_callname, '*               '); // 16 espaços
+  StrPCopy(NCB.ncb_callname, '*               '); // precisa de 16 espaços
 
   if Netbios(@NCB) <> NRC_GOODRET then
     raise Exception.Create('Erro ao obter o status do adaptador');
@@ -169,5 +171,5 @@ end;
 
 begin
   Main;
-end.
 
+end.
