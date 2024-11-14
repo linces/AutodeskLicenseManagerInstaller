@@ -26,9 +26,7 @@ var
 begin
   FillChar(NCB, SizeOf(NCB), 0);
   NCB.ncb_command := AnsiChar(NCBRESET);
-//  NCB.ncb_lana_num := 0;
-  NCB.ncb_lana_num := AnsiChar(0);
-
+  NCB.ncb_lana_num := 0;
 
   if Netbios(@NCB) <> NRC_GOODRET then
     raise Exception.Create('Erro ao resetar o NetBIOS');
