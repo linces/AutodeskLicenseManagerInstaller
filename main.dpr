@@ -8,9 +8,9 @@ uses
   ShellAPI, Windows, SysUtils, Classes, Registry, WinSock, Nb30;
 
 const
-  NCBRESET = $32;  // Constante para resetar o NCB (valor numérico, não AnsiChar)
-  NCBASTAT = $33;  // Constante para obter o status do NCB (valor numérico, não AnsiChar)
-  NRC_GOODRET = 0;  // Retorno de sucesso do Netbios (valor numérico)
+  NCBRESET = $32;  // Constante para resetar o NCB - valor HEX que representa o comando de reset
+  NCBASTAT = $33;  // Constante para obter o status do NCB
+  NRC_GOODRET = 0; // Retorno de sucesso do Netbios (geralmente 0)
 
 function GetHostName: string;
 var
@@ -61,8 +61,8 @@ var
 begin
   // Inicializa a estrutura NCB
   FillChar(NCB, SizeOf(NCB), 0);
-  NCB.ncb_command := Char(NCBRESET);  // Agora como Char, compatível com o tipo de ncb_command
-  NCB.ncb_lana_num := Byte(0);        // Mantém como Byte para o número da rede
+  NCB.ncb_command := Char(NCBRESET);  // Convertendo o valor de HEX para Char
+  NCB.ncb_lana_num := AnsiChar(Byte(0));        // O número da rede, tratado como Byte
 
   // Chamando Netbios para resetar
   if Netbios(@NCB) <> NRC_GOODRET then
@@ -70,8 +70,8 @@ begin
 
   // Preenche novamente a estrutura NCB para obter o status
   FillChar(NCB, SizeOf(NCB), 0);
-  NCB.ncb_command := Char(NCBASTAT);  // Mantém como Char para comando válido
-  NCB.ncb_lana_num := Byte(0);        // Mantém como Byte
+  NCB.ncb_command := Char(NCBASTAT);  // Convertendo o valor de HEX para Char
+  NCB.ncb_lana_num := Byte(0);        // O número da rede, tratado como Byte
 
   // Definir o nome de chamada
   StrPCopy(NCB.ncb_callname, '*               ');  // Precisa de 16 espaços

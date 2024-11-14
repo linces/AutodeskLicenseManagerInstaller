@@ -7,15 +7,50 @@
 uses
   ShellAPI, Windows, SysUtils, Classes, Registry, WinSock, Nb30;
 
+const
+  NCBRESET = $32;  // Constante para resetar o NCB - valor HEX que representa o comando de reset
+  NCBASTAT = $33;  // Constante para obter o status do NCB
+  NRC_GOODRET = 0; // Retorno de sucesso do Netbios (geralmente 0)
+
 function GetHostName: string;
 var
   Buffer: array [0 .. 255] of AnsiChar;
 begin
-  if WinSock.GetHostName(@Buffer, SizeOf(Buffer)) = 0 then
+  if WinSock.GetHostName(@Buffer[0], SizeOf(Buffer)) = 0 then
     Result := string(Buffer)
   else
     raise Exception.Create('Erro ao obter o nome do host');
 end;
+
+//function GetMACAddress: string;
+//var
+//  NCB: TNCB;
+//  Adapter: TAdapterStatus;
+//  i: Integer;
+//  MAC: string;
+//begin
+//  FillChar(NCB, SizeOf(NCB), 0);
+//  NCB.ncb_command := AnsiChar(NCBRESET);
+//  NCB.ncb_lana_num := AnsiChar(0);
+//
+//  if Netbios(@NCB) <> NRC_GOODRET then
+//    raise Exception.Create('Erro ao resetar o NetBIOS');
+//
+//  FillChar(NCB, SizeOf(NCB), 0);
+//  NCB.ncb_command := AnsiChar(NCBASTAT);
+//  NCB.ncb_lana_num := 0;
+//  StrPCopy(NCB.ncb_callname, '*               '); // 16 espaços
+//
+//  if Netbios(@NCB) <> NRC_GOODRET then
+//    raise Exception.Create('Erro ao obter o status do adaptador');
+//
+//  Move(NCB.ncb_buffer, Adapter, SizeOf(Adapter));
+//
+//  MAC := '';
+//  for i := 0 to 5 do
+//    MAC := MAC + IntToHex(Adapter.adapter_address[i], 2);
+//  Result := MAC;
+//end;
 
 function GetMACAddress: string;
 var
@@ -24,26 +59,36 @@ var
   i:       Integer;
   MAC:     string;
 begin
+  // Inicializa a estrutura NCB
   FillChar(NCB, SizeOf(NCB), 0);
-  NCB.ncb_command := AnsiChar(NCBRESET);
-  NCB.ncb_lana_num := 0;
+  NCB.ncb_command := Char(NCBRESET);  // Convertendo o valor de HEX para Char
+  NCB.ncb_lana_num := Byte(0);        // O número da rede, tratado como Byte
 
+  // Chamando Netbios para resetar
   if Netbios(@NCB) <> NRC_GOODRET then
     raise Exception.Create('Erro ao resetar o NetBIOS');
 
+  // Preenche novamente a estrutura NCB para obter o status
   FillChar(NCB, SizeOf(NCB), 0);
-  NCB.ncb_command := NCBASTAT;
-  NCB.ncb_lana_num := 0;
-  StrPCopy(NCB.ncb_callname, '*               '); // precisa de 16 espaços
+  NCB.ncb_command := Char(NCBASTAT);  // Convertendo o valor de HEX para Char
+  NCB.ncb_lana_num := Byte(0);        // O número da rede, tratado como Byte
 
+  // Definir o nome de chamada
+  StrPCopy(NCB.ncb_callname, '*               ');  // Precisa de 16 espaços
+
+  // Chamando Netbios para obter o status
   if Netbios(@NCB) <> NRC_GOODRET then
     raise Exception.Create('Erro ao obter o status do adaptador');
 
+  // Move o buffer de resposta para o Adapter
   Move(NCB.ncb_buffer, Adapter, SizeOf(Adapter));
 
+  // Montar o MAC Address a partir do buffer de resposta
   MAC := '';
   for i := 0 to 5 do
     MAC := MAC + IntToHex(Adapter.adapter_address[i], 2);
+
+  // Retorna o MAC Address
   Result := MAC;
 end;
 
@@ -169,5 +214,5 @@ end;
 
 begin
   Main;
-
 end.
+
