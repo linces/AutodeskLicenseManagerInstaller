@@ -2,6 +2,8 @@
 
 Script Delphi para instalação e configuração automatizada do License Manager da Autodesk, incluindo substituição dinâmica do Hostname e Endereço MAC.
 
+Isto é uma tentativa de automatizar o processo de uso do Crack do Magnitude. Lógicamente vc irá precisar dele para que tudo funcione.
+
 ## Descrição
 
 Este script automatiza o processo de instalação do License Manager da Autodesk, substituindo o Hostname e o Endereço MAC no arquivo de licença (`lic.dat`). Ideal para empresas ou usuários que precisam de uma configuração rápida e personalizada do sistema de licenciamento em rede da Autodesk.
