@@ -1,7 +1,7 @@
-{
-  Autodesk License Manager Installer Automation
-  Autor: Linces Marques
-  Data : 14/11/2024
+{ Linces Marques
+
+
+
 }
 
 uses
@@ -9,9 +9,9 @@ uses
 
 function GetHostName: string;
 var
-  Buffer: array [0 .. 255] of AnsiChar;
+  Buffer: array[0..255] of AnsiChar;
 begin
-  if WinSock.GetHostName(@Buffer, SizeOf(Buffer)) = 0 then
+  if WinSock.gethostname(@Buffer, SizeOf(Buffer)) = 0 then
     Result := string(Buffer)
   else
     raise Exception.Create('Erro ao obter o nome do host');
@@ -19,13 +19,13 @@ end;
 
 function GetMACAddress: string;
 var
-  NCB:     TNCB;
+  NCB: TNCB;
   Adapter: TAdapterStatus;
-  i:       Integer;
-  MAC:     string;
+  i: Integer;
+  MAC: string;
 begin
   FillChar(NCB, SizeOf(NCB), 0);
-  NCB.ncb_command := AnsiChar(NCBRESET);
+  NCB.ncb_command := NCBRESET;
   NCB.ncb_lana_num := 0;
 
   if Netbios(@NCB) <> NRC_GOODRET then
@@ -129,22 +129,14 @@ var
   HostName, MACAddress: string;
 begin
   try
-    const
-      AppInstallerPath = 'C:\path_to_autodesk_installer.exe';
-    const
-      NLMInstallerPath = 'C:\path_to_crack\NLM.msi';
-    const
-      CrackedAdskflex = 'C:\path_to_crack\adskflex.exe';
-    const
-      DestAdskflex = 'C:\Autodesk\Network License Manager\adskflex.exe';
-    const
-      CrackedNetapi32 = 'C:\path_to_crack\netapi32.dll';
-    const
-      DestNetapi32 = 'C:\Program Files (x86)\Common Files\Autodesk Shared\AdskLicensing\Current\AdskLicensingAgent\netapi32.dll';
-    const
-      LicFilePath = 'C:\Autodesk\Network License Manager\lic.dat';
-    const
-      LMToolsPath = 'C:\Autodesk\Network License Manager\lmtools.exe';
+    const AppInstallerPath = 'C:\path_to_autodesk_installer.exe';
+    const NLMInstallerPath = 'C:\path_to_crack\NLM.msi';
+    const CrackedAdskflex = 'C:\path_to_crack\adskflex.exe';
+    const DestAdskflex = 'C:\Autodesk\Network License Manager\adskflex.exe';
+    const CrackedNetapi32 = 'C:\path_to_crack\netapi32.dll';
+    const DestNetapi32 = 'C:\Program Files (x86)\Common Files\Autodesk Shared\AdskLicensing\Current\AdskLicensingAgent\netapi32.dll';
+    const LicFilePath = 'C:\Autodesk\Network License Manager\lic.dat';
+    const LMToolsPath = 'C:\Autodesk\Network License Manager\lmtools.exe';
 
     InstallApplication(AppInstallerPath);
     InstallNLM(NLMInstallerPath);
@@ -169,5 +161,5 @@ end;
 
 begin
   Main;
-
 end.
+

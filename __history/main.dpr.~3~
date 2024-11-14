@@ -1,7 +1,7 @@
-{
-  Autodesk License Manager Installer Automation
-  Autor: Linces Marques
-  Data : 14/11/2024
+{ Linces Marques
+
+
+
 }
 
 uses
@@ -25,7 +25,7 @@ var
   MAC:     string;
 begin
   FillChar(NCB, SizeOf(NCB), 0);
-  NCB.ncb_command := AnsiChar(NCBRESET);
+  NCB.ncb_command := NCBRESET;
   NCB.ncb_lana_num := 0;
 
   if Netbios(@NCB) <> NRC_GOODRET then
