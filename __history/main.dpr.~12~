@@ -59,38 +59,30 @@ var
   i:       Integer;
   MAC:     string;
 begin
-  // Inicializa a estrutura NCB
   FillChar(NCB, SizeOf(NCB), 0);
-  NCB.ncb_command := Char(NCBRESET);  // Agora como Char, compatível com o tipo de ncb_command
-  NCB.ncb_lana_num := Byte(0);        // Mantém como Byte para o número da rede
+  NCB.ncb_command := NCBRESET;
+  NCB.ncb_lana_num := Byte(0); // Ajuste para Byte em vez de AnsiChar
 
-  // Chamando Netbios para resetar
-  if Netbios(@NCB) <> NRC_GOODRET then
+  if Netbios(@NCB) <> Ord(NRC_GOODRET) then // Ord() para garantir compatibilidade
     raise Exception.Create('Erro ao resetar o NetBIOS');
 
-  // Preenche novamente a estrutura NCB para obter o status
   FillChar(NCB, SizeOf(NCB), 0);
-  NCB.ncb_command := Char(NCBASTAT);  // Mantém como Char para comando válido
-  NCB.ncb_lana_num := Byte(0);        // Mantém como Byte
+  NCB.ncb_command := NCBASTAT;
+  NCB.ncb_lana_num := Byte(0);
+  StrPCopy(NCB.ncb_callname, '*               '); // 16 espaços para o nome de chamada
 
-  // Definir o nome de chamada
-  StrPCopy(NCB.ncb_callname, '*               ');  // Precisa de 16 espaços
-
-  // Chamando Netbios para obter o status
-  if Netbios(@NCB) <> NRC_GOODRET then
+  if Netbios(@NCB) <> Ord(NRC_GOODRET) then
     raise Exception.Create('Erro ao obter o status do adaptador');
 
-  // Move o buffer de resposta para o Adapter
   Move(NCB.ncb_buffer, Adapter, SizeOf(Adapter));
 
-  // Montar o MAC Address a partir do buffer de resposta
   MAC := '';
   for i := 0 to 5 do
     MAC := MAC + IntToHex(Adapter.adapter_address[i], 2);
-
-  // Retorna o MAC Address
   Result := MAC;
 end;
+
+
 
 procedure InstallApplication(const AppPath: string);
 begin
