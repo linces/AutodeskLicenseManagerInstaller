@@ -65,17 +65,16 @@ begin
   NCB.ncb_command := AnsiChar(NCBRESET);
   NCB.ncb_lana_num := AnsiChar(0);
 
-//  if Netbios(@NCB) <> NRC_GOODRET then
-if Netbios(@NCB) <> AnsiChar(Byte(NRC_GOODRET)) then
+  if Netbios(@NCB) <> NRC_GOODRET then
     raise Exception.Create('Erro ao resetar o NetBIOS');
 
   FillChar(NCB, SizeOf(NCB), 0);
   NCB.ncb_command := AnsiChar(NCBASTAT);
-  NCB.ncb_lana_num :=  AnsiChar(0);
+  NCB.ncb_lana_num := 0;
 
   StrPCopy(NCB.ncb_callname, '*               ');
 
-  if Netbios(@NCB) <> AnsiChar(Byte(NRC_GOODRET)) then
+  if Netbios(@NCB) <> NRC_GOODRET then
     raise Exception.Create('Erro ao obter o status do adaptador');
 
   Move(NCB.ncb_buffer, Adapter, SizeOf(Adapter));
